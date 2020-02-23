@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2020/02/22 15:41:10.000.891,=C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2020/02/22 15:42:04.000.837,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Exemplo.dproj</Transaction>
+    <Transaction>2020/02/22 15:42:09.000.236,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Principal.pas</Transaction>
+    <Transaction>2020/02/22 15:42:09.000.236,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Principal.dfm</Transaction>
+    <Transaction>2020/02/22 15:42:14.000.426,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Exemplo.dproj=C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\WTSApi.dproj</Transaction>
+    <Transaction>2020/02/22 15:42:30.000.472,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Principal.dfm=F:\ProjetosDF\WTSApi3.0\Principal.dfm</Transaction>
+    <Transaction>2020/02/22 15:42:30.000.472,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\Principal.pas=F:\ProjetosDF\WTSApi3.0\Principal.pas</Transaction>
+    <Transaction>2020/02/22 15:42:33.000.055,C:\Users\Hendell Cardoso\Documents\Embarcadero\Studio\Projects\WTSApi.dproj=F:\ProjetosDF\WTSApi3.0\WTSApi.dproj</Transaction>
+    <Transaction>2020/02/22 15:42:37.000.054,=F:\ProjetosDF\WTSApi3.0\Unit1.pas</Transaction>
+    <Transaction>2020/02/22 15:42:46.000.290,F:\ProjetosDF\WTSApi3.0\Unit1.pas=F:\ProjetosDF\WTSApi3.0\wts.pas</Transaction>
+    <Transaction>2020/02/22 15:42:52.000.810,F:\ProjetosDF\WTSApi3.0\wts.API=F:\ProjetosDF\WTSApi3.0\wts.API.API</Transaction>
+    <Transaction>2020/02/22 15:43:10.000.986,F:\ProjetosDF\WTSApi3.0\WTSApi.dproj=F:\ProjetosDF\WTSApi3.0\Exemplo.dproj</Transaction>
+    <Transaction>2020/02/22 17:12:39.000.194,=F:\ProjetosDF\WTSApi3.0\DelphiZXIngQRCode.pas</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="DelphiZXIngQRCode.pas"/>
+    <File Path="Principal.pas"/>
+    <File Path="Principal.dfm"/>
+    <File Path="wts.API.pas"/>
+  </ProjectSortOrder>
+</BorlandProject>
