@@ -77,6 +77,7 @@ type
          property Webhook: String read FWebhook write SetWebhook;
          procedure Conectar();
          procedure Desconectar();
+         procedure Reiniciar();
          function ObterNumeroConectado(): String;
          function ObterNivelBateria(): String;
          function EstaConectado: Boolean;
@@ -94,7 +95,8 @@ implementation
 
 { TWTSApi }
 
-uses DelphiZXIngQRCode;
+uses
+   DelphiZXIngQRCode;
 
 
 
@@ -443,6 +445,7 @@ begin
    result :=  MaskCelular(numero);
 end;
 
+
 procedure TWTSApi.OnFormShow(Sender: TObject);
 var
    T : TThread;
@@ -636,6 +639,19 @@ begin
    if Assigned(Frm) then
    begin
       Frm.Close;
+   end;
+end;
+
+procedure TWTSApi.Reiniciar;
+var
+   stJSON: String;
+   url   : String;
+begin
+   url := FEndpoint + ':' + FPorta.ToString + '/whatsapp/reiniciar';
+   stJSON := wtsGET(url);
+   if stJSON = '' then
+   begin
+      raise Exception.Create('Não foi possível reiniciar!');
    end;
 end;
 

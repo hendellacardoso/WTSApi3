@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls,
-  Vcl.Mask, Vcl.Buttons, Vcl.Menus,
+  Vcl.Mask, Vcl.Buttons, Vcl.Menus, Soap.EncdDecd, StrUtils ,
 
   //Classe da API
   wts.API, System.Actions, Vcl.ActnList;
@@ -36,6 +36,7 @@ type
     Label5: TLabel;
     ListaContatos: TListView;
     botObterContatos: TButton;
+    Reiniciar1: TMenuItem;
     procedure botSelecionarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -43,10 +44,12 @@ type
     procedure botEnviarClick(Sender: TObject);
     procedure botObterContatosClick(Sender: TObject);
     procedure DefinirWebhook1Click(Sender: TObject);
-
+    procedure edtMensagemChange(Sender: TObject);
+    procedure Reiniciar1Click(Sender: TObject);
   private
     { Private declarations }
     procedure AddMsg(Lista: TListView; Contato, Mensagem: String);
+    procedure AddMidia(Lista: TListView; Contato, Mensagem: String);
     procedure AddContato(Lista: TListView; Contato, Agenda, Pushname: String;
               MeuContato: Boolean);
     procedure AoConectarAPI(const msg: String);
@@ -54,6 +57,10 @@ type
               tipo,token,data,hora,mimetype,caption,mensagem: String);
     procedure AoReceberCT(const contato,agenda,pushname: String;
               const meucontato: Boolean);
+    function CriarMidia(tipo: String; base64: AnsiString): String;
+    function ObterTipo(tipo: String): String;
+    function SplitStr(valor, caracter: string; index: integer): string;
+
   public
     { Public declarations }
   end;
@@ -68,8 +75,86 @@ implementation
 {$R *.dfm}
 
 
+{$REGION ' REINICIAR API '}
+procedure TForm1.Reiniciar1Click(Sender: TObject);
+begin
+   if Status.Panels[1].Text = 'Conectado' then
+   begin
+      API.Reiniciar;
+   end
+   else
+   begin
+      ShowMessage('Você não está conectado!');
+   end;
+end;
+{$ENDREGION}
+
+
+{$REGION ' OBTEM A EXTENSÃO DO ARQUIVO '}
+function TForm1.ObterTipo(tipo: String): String;
+var
+  retorno: String;
+begin
+
+  retorno := SplitStr(tipo,'/',2);
+  retorno := AnsiLeftStr(retorno, 4);
+  retorno := StringReplace(retorno,';','',[rfReplaceAll]);
+  retorno := StringReplace(retorno,' ','',[rfReplaceAll]);
+  result  := retorno;
+
+end;
+{$ENDREGION}
+
+
+{$REGION ' SPLIT DO ARQUIVO '}
+function TForm1.SplitStr(valor, caracter: string; index: integer): string;
+var
+  anterior,i,contador:integer;
+begin
+contador:=0;
+  for i:=0 to length(valor) do
+  begin
+    if valor[i]=caracter then
+    begin
+      if (contador = index-1) then
+      begin
+        result:=copy(valor,anterior+1,i-anterior-1);
+        exit;
+      end;
+      anterior:=i;
+      inc(contador,1);
+    end;
+
+    if i=length(valor) then
+    begin
+      result:=copy(valor,anterior+1,i-anterior);
+      exit;
+    end;
+
+    if index=1 then
+    begin
+      result:=copy(valor,0,pos(caracter,valor)-1);
+      exit;
+    end;
+  end;
+end;
+{$ENDREGION}
+
+
 {$REGION ' ADICIONAR MENSAGEM RECEBIDA NA LISTA '}
 procedure TForm1.AddMsg(Lista: TListView; Contato, Mensagem: String);
+begin
+   With Lista.Items.Add do
+   begin
+      Caption := Contato;
+      SubItems.Add(Mensagem);
+   end;
+end;
+{$ENDREGION}
+
+
+{$REGION ' ADICIONAR MIDIA RECEBIDA NA LISTA '}
+procedure TForm1.AddMidia(Lista: TListView; Contato, Mensagem: String);
 begin
    With Lista.Items.Add do
    begin
@@ -143,13 +228,55 @@ end;
 {$ENDREGION}
 
 
+{$REGION ' CRIAR ARQUIVO RECEBIDO '}
+function TForm1.CriarMidia(tipo: String; base64: AnsiString): String;
+var
+  stream: TFileStream;
+  bytes: TBytes;
+  FileName: String;
+  Caminho: String;
+begin
+
+  Caminho := ExtractFilePath(Application.ExeName) + 'anexos\';
+  //FileName := TGUID.NewGuid.ToString();
+  FileName := IntToStr(Random(11)) + IntToStr(Random(11)) + IntToStr(Random(11)) +
+  IntToStr(Random(11)) + IntToStr(Random(11)) + IntToStr(Random(11));
+
+  FileName := Caminho + FileName + '.' + ObterTipo(tipo);
+
+  bytes := DecodeBase64(base64);
+  stream := TFileStream.Create(FileName, fmCreate);
+  try
+    if bytes<>nil then
+      stream.Write(bytes[0], Length(Bytes));
+  finally
+    stream.Free;
+  end;
+
+  result := FileName;
+
+end;
+{$ENDREGION}
+
+
 {$REGION ' AO RECEBER MENSAGENS '}
 procedure TForm1.AoReceberMSG(const id: Integer; const pushname, nome, contato,
   tipo, token, data, hora, mimetype, caption, mensagem: String);
+var
+  LocArq,
+  Arquivo: String;
 begin
 
    if (tipo='mensagem') or (tipo='resposta')  then
+   begin
       AddMsg(listMSG, contato, mensagem);
+   end
+   else
+   begin
+      LocArq := ExtractFilePath(Application.ExeName) + '\anexos\';
+      Arquivo := CriarMidia(mimetype, mensagem);
+      AddMsg(listMSG, contato, Arquivo);
+   end;
 
 end;
 {$ENDREGION}
@@ -202,6 +329,12 @@ begin
    Application.MessageBox(PChar(msg),'Atenção',MB_ICONINFORMATION);
 
 end;
+
+procedure TForm1.edtMensagemChange(Sender: TObject);
+begin
+
+end;
+
 {$ENDREGION}
 
 
@@ -220,6 +353,7 @@ begin
    end;
 
 end;
+
 {$ENDREGION}
 
 
@@ -242,9 +376,9 @@ begin
 
    {$REGION ' CONFIGURAÇÕES DA API '}
       API := TWTSApi.Create;
-      API.Endpoint          := '';
-      API.Porta             := 0;
-      API.Token             := '';
+      API.Endpoint          := 'http://127.0.0.1';
+      API.Porta             := 8045;
+      API.Token             := 'WTSAPI3';
       API.Webhook           := '';
       API.AoConectar        := AoConectarAPI;
       API.AoReceberMensagem := AoReceberMSG;
@@ -257,7 +391,9 @@ begin
    {$ENDREGION}
 
 end;
+
 {$ENDREGION}
+
 
 
 end.

@@ -960,10 +960,6 @@ object Form1: TForm1
     TabStop = False
     object tabMensagem: TTabSheet
       Caption = 'Mensagem'
-      ExplicitLeft = -148
-      ExplicitTop = 32
-      ExplicitWidth = 740
-      ExplicitHeight = 461
       object Label1: TLabel
         Left = 151
         Top = 14
@@ -1121,8 +1117,6 @@ object Form1: TForm1
     object tabContatos: TTabSheet
       Caption = 'Contatos'
       ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 22
       object Label5: TLabel
         AlignWithMargins = True
         Left = 10
@@ -1240,12 +1234,10 @@ object Form1: TForm1
         Text = '0%'
         Width = 50
       end>
-    ExplicitTop = 473
-    ExplicitWidth = 665
   end
   object MainMenu1: TMainMenu
-    Left = 304
-    Top = 216
+    Left = 288
+    Top = 112
     object OpesdaAPI1: TMenuItem
       Caption = 'Op'#231#245'es da API'
       object Conectar1: TMenuItem
@@ -1255,6 +1247,10 @@ object Form1: TForm1
       object DefinirWebhook1: TMenuItem
         Caption = 'Definir Webhook'
         OnClick = DefinirWebhook1Click
+      end
+      object Reiniciar1: TMenuItem
+        Caption = 'Reiniciar'
+        OnClick = Reiniciar1Click
       end
       object N1: TMenuItem
         Caption = '-'
@@ -1267,7 +1263,7 @@ object Form1: TForm1
   object OpenDialog1: TOpenDialog
     Filter = 'Documento / Imagem|*.*'
     Title = 'Selecione'
-    Left = 224
-    Top = 216
+    Left = 192
+    Top = 112
   end
 end
